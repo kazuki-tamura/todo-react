@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./styles.css";
+import { InputTodo } from "./components/InputTodo";
+import { UndoneTodo } from "./components/UndoneTodo";
+import { DoneTodo } from "./components/DoneTodo";
 
 export const App = () => {
   const [todoText, setTodoText] = useState("");
@@ -14,6 +17,12 @@ export const App = () => {
   // add todo
   const onClickAddTodo = () => {
     if (todoText === "") return; // do nothing
+
+    if (undoneTodos.length >= 5) {
+      alert("タスクを消化してください！");
+      return;
+    }
+
     const newTodo = [...undoneTodos, todoText];
     setUndoneTodos(newTodo);
     setTodoText("");
@@ -46,41 +55,17 @@ export const App = () => {
 
   return (
     <>
-      <div className="input-area">
-        <input
-          placeholder="TODOを入力"
-          value={todoText}
-          onChange={onChangeTodoText}
-        />
-        <button onClick={onClickAddTodo}>追加</button>
-      </div>
-      <div className="undone-area">
-        <p className="title">未完了のTODO</p>
-        <ul>
-          {undoneTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickDone(index)}>完了</button>
-                <button onClick={() => onClickDelete(index)}>削除</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="done-area">
-        <p className="title">完了したTODO</p>
-        <ul>
-          {doneTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickBack(index)}>戻す</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
+      <InputTodo
+        todoText={todoText}
+        onChange={onChangeTodoText}
+        onClick={onClickAddTodo}
+      />
+      <UndoneTodo
+        undoneTodos={undoneTodos}
+        onClickDone={onClickDone}
+        onClickDelete={onClickDelete}
+      />
+      <DoneTodo doneTodos={doneTodos} onClickBack={onClickBack} />
     </>
   );
 };
